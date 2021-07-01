@@ -7,14 +7,14 @@ x, yはpublicで作成し、外部で値を設定して、
 値が表示されることを確認してください。
 
 struct Vector2
-{s
+{
 
 	//publicでxとyそれぞれの変数をint型作成
 public :
 	int x;
 	int y;
 };
-/*
+*/
 
 /*
 第２問
