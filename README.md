@@ -1,1 +1,1 @@
-# 6_30
+# Box for assignments　sushi rice vinegar
