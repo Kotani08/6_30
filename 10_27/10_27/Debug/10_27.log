@@ -1,3 +1,2 @@
 ﻿  main.cpp
-  LINK : 前回のインクリメンタル リンクで C:\Users\PC_User\source\repos\10_27\Debug\10_27.exe が見つからなかったか、ビルドされませんでした。フル リンクを行います。
-  10_27.vcxproj -> C:\Users\PC_User\source\repos\10_27\Debug\10_27.exe
+LINK : fatal error LNK1168: ファイル C:\Users\PC_User\source\repos\10_27\Debug\10_27.exe を開いて書き込むことができません。
