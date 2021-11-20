@@ -1,318 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-/*
-仮想関数
-継承元のクラスの関数を仮想関数にしておくと、
-継承先で処理を書き換えることができる。
-
-// 仮想関数にしない場合
-class ParentClass
-{
-public:
-    ParentClass() {}
-    void Print(){ printf("Parent\n"); }
-};
-class ChildClass : public ParentClass
-{
-public:
-    ChildClass() {}
-    void Print(){ printf("Child\n"); }
-};
-*/
-/*
-class ParentClass
-{
-public:
-    ParentClass() {}
-    void Print() { printf("Parent\n"); }
-};
-class ChildClass : public ParentClass
-{
-public:
-    void Print() { printf("Child\n"); }
-};
-*/
-/*int main()
-{
-    ParentClass* parent = new ParentClass();
-    ParentClass* child = new ChildClass();
-
-    parent->Print();
-    child->Print();
-
-    delete parent;
-    delete child;
-}
-*/
-/*
-上記を実行すると
-PrintClass型に入れているので
-当然ParentClassの処理が呼び出されている
-そのため.Printの内容はParentとなる。
-仮想関数にする処理でも
-継承先の処理が行われる。
-*/
-/*
-上記を実行すると
-Printの実行結果が変わっていることが確認できると思います
-このように同じ名前の関数であることが
-継承先ごとに違う振る舞いを挿せることを
-ポリモーフィズムと言います
-*/
-
-/*
-以下のようなClassAddクラスを作成し継承し
-Calcを引き算を行うようにしたCalcSubクラスを作成してください。
-*/
-/*
-class CalcAdd
-{
-public:
-    CalcAdd() {}
-    virtual int Calc(int x, int y)
-    {
-        int ans;
-        ans = x + y;
-        printf("%d + %d = %d\n", x, y, ans);
-        return ans;
-    }
-};
-class CalcSub : public CalcAdd
-{
-public:
-    virtual int Calc(int x, int y)
-    {
-        int ans;
-        ans = x - y;
-        printf("%d - %d = %d\n", x, y, ans);
-        return ans;
-    }
-};
-int main()
-{
-    CalcAdd add;
-    CalcSub sub;
-    
-    add.Calc(10, 5);
-    sub.Calc(10, 5);
-}
-*/
-
-/*
-わざわざ上記のような変数の宣言のやり方はやらない、
-と思うかもしれませんが、
-例えば関数に渡すような場合は、
-ポインタで受け取るので、
-仮想関数で作っておかないと、
-望んだ結果が得られない場合があるので、
-継承先でそれぞれ挙動を変えたい場合は、
-仮想関数で作るようにしましょう。
-*/
-// Objectクラスを継承して、Player,Enemyを作る
-/*class Object
-{
-public:
-    Object() {}
-    virtual ~Object() { printf("Exec Object Destructor.\n"); }
-public:
-    virtual void Update() {}//とりあえずvirtualは付けとく
-};
-
-class Player : public Object
-{
-public:
-    Player() {}
-    ~Player() { printf("Exec Player Destructor.\n"); }
-public:
-    void Update() { printf("Player Update.\n"); }
-};
-
-class Enemy : public Object
-{
-public:
-    Enemy() {}
-    ~Enemy() { printf("Exec Enemy Destructor.\n"); }
-public:
-    void Update() { printf("Enemy Update.\n"); }
-};
-
-void DoUpdate(Object* obj)
-{
-    obj->Update();
-}
-
-int main()
-{
-    Player player;
-    Enemy enemy;
-
-    DoUpdate(&player);
-    DoUpdate(&enemy);
-}*/
-
-/*
-前回作成したPoliceCarを修正してください。
-修正内容はCarのSetAccelerationの上限と下限の値を(-100,50)に
-変更して-10以下、5以上が設定できるようにしてください。
-この時SetAccelerationはvirtualをつけて処理を実現してください。
-*/
-/*class Car
-{
-public:
-    Car();
-    virtual void    SetAcceleration(float _a);
-    float           GetSpeed() const;
-
-    // publicが続くのでアクセス指定子を変更する意味合いはないが、
-    // 上のブロックがpublicなSet,Getでここからのpublicは処理系を
-    // まとめたブロックとして分けて見やすくしている。
-public:
-    void    Update();
-
-private:
-    void    setSpeed(float _s); // 速度は加速度を用いた計算でのみ変更できるようにしたいので、
-                                // privateにしておく。
-protected:
-    float   acceleration;
-private:
-    float   speed;
-};
-
-class PoliceCar : public Car
-{
-public:
-    PoliceCar() { sirenFlag = false; }
-
-public:
-    void SirenOn()
-    {
-        sirenFlag = true;
-        printf("サイレン機能をOnにしました。\n");
-    }
-    void SirenOff()
-    {
-        sirenFlag = false;
-        printf("サイレン機能をOffにしました。\n");
-    }
-    virtual void    SetAcceleration(float _a);
-private:
-    bool    sirenFlag;
-};
-
-
-
-// コンストラクタ
-Car::Car()
-{
-    acceleration = speed = 0.0f;
-}
-
-//
-void Car::SetAcceleration(float _a)
-{
-    if (_a < -10 || _a > 5)
-    {
-        printf("SetAcceleration Error\n");
-        return;
-    }
-    acceleration = _a;
-}
-
-// 
-float Car::GetSpeed() const
-{
-    return speed;
-}
-
-//
-void Car::Update()
-{
-    setSpeed(acceleration);
-}
-
-//
-void Car::setSpeed(float _s)
-{
-    float tmpSpeed = speed + _s;
-    if (tmpSpeed < -30 || tmpSpeed > 200)
-    {
-        printf("setSpeed Error.\n");
-        return;
-    }
-    speed = tmpSpeed;
-}
-
-//
-void PoliceCar::SetAcceleration(float _a)
-{
-    if (_a < -100 || _a > 50)
-    {
-        printf("SetAcceleration Error\n");
-        return;
-    }
-    acceleration = _a;
-}
-
-int main()
-{
-    PoliceCar policeCar;
-    Car* car = &policeCar;
-
-    policeCar.SirenOn();
-    policeCar.SirenOff();
-
-
-    // もちろんCarの機能もすべて使える 
-    car->SetAcceleration(50.0f);
-
-    for (int i = 0; i < 100; ++i)
-    {
-        car->Update();
-        printf("Speed = %f\n", car->GetSpeed());
-    }
-    car->SetAcceleration(-0.1f);
-
-    for (int i = 0; i < 100; ++i)
-    {
-        car->Update();
-        printf("Speed = %f\n", car->GetSpeed());
-    }
-
-}
-*/
-/*
-【問題】
-Objectクラス
-x,y,z座標を保存する変数、Update関数を持つ。
-Update関数はvirtualで作ってください。
-
-Vehicle(乗り物)クラス
-Objectクラスを継承したクラス。
-ここではSpeedUpクラスを追加してください。
-またspeedとaccelの変数をここで追加してください。
-SpeedUpクラスはvirtualで作ってください。
-(正確な速度の処理を行いたい場合は、向きと加速度で、
-ベクトルを計算する方法でも構いません。)
-
-Car(車)クラス
-Vehicleクラスを継承したクラス
-SpeedUpをここでCar用に実装してください。
-
-流れを理解するという意味で、
-この親クラスから派生クラスを作っていってほしいので、
-中の計算処理やデータの設定の仕方は、
-適当に行ってもらって結構です。
-
-また、このクラスは必ず提出してください。
-成績に加味します。
-
-時間があれば、
-Vehicleクラスを継承して、
-bicycle(自転車)やbike(オートバイ)
-といったクラスの作成や、
-Carをさらに継承したpolice carや、truckなどの
-クラスを作成してみてください。
-*/
+//速度計算を簡易化した分色んな機能を積んで遊びました
 
 class Object
 {
@@ -321,27 +10,81 @@ class Object
 //Update関数はvirtualで作ってください。
 public:
     Object(){};
-    virtual void   Update(){};
-    float   object_x = 0;
-    float   object_y = 0;
-    float   object_z = 0;
+    int   object_x = 0;
+    int   object_y = 0;
+    int   object_z = 0;
 };
 
 class Vehicle : public Object
 {
+    Object Object;
+    int hoge=0;
 //Vehicle(乗り物)クラス Objectクラスを継承したクラス。
 //ここではSpeedUpクラスを追加してください。
 //またspeedとaccelの変数をここで追加してください。
 //SpeedUpクラスはvirtualで作ってください。
 public:
     Vehicle() {};
-    virtual void SpeedUp()
+    //現在のスピードの表示、加速
+    //Bikeでも同じ加速方法を使うのでここに計算を置きました
+    virtual void Speed()
     {
-        speed++;
-        printf("現在のspeed:%d\n", speed);
+        if (accel >= 0)
+        {
+            speed += accel;
+            printf("[現在のspeed:%d]\n", speed);
+        }
+        else
+        {
+            printf("[現在のspeed:ERROR]\n");
+        }
     };
-    int   speed;
-    bool   accel;//ON,OFF
+    //現在の状態を確認、表示
+    virtual void NowCondition()
+    {
+        if (speed == 0)
+        {
+            printf("現在の状態:停止中\n");
+        }
+        else if (speed >= 1)
+        {
+            printf("現在の状態:動作中\n");
+        }
+        else
+        {
+            printf("現在の状態:故障中\n");
+        }
+    };
+    //現在地の表示
+    virtual void NowPosition(int speed)
+    {
+        hoge = rand() % 3;//xyzの確認ように適当に動かす
+
+        switch (hoge)
+        {
+        case 0:
+            Object.object_z += speed;
+            break;
+        case 1:
+            Object.object_y += speed;
+            break;
+        case 2:
+            Object.object_x += speed;
+            break;
+        default:
+            printf("[ERROR]\n[四次元方向に移動したため、現在の座標を見失いました]\n");
+        }
+        if (speed >= 0) {
+            printf("現在の座標[%d,%d,%d]", Object.object_x, Object.object_y, Object.object_z);
+        }
+        else
+        {
+            //speedがエラー中に通る場所
+        }
+    };
+
+    int   speed = 0;
+    int   accel = 0;
 };
 
 class Car : public Vehicle
@@ -351,37 +94,58 @@ class Car : public Vehicle
 public:
     Car()
     {
-        speed = 0;
-        accel = 1;
-    };
-    void SpeedUp()
-    {
-        speed += accel;
-        printf("現在のspeed:%d\n", speed);
+        speed = 0;//直接打ち込むことで変更
+        accel = 0;//その際はmainの入力項目は消すこと
     };
     void Update()
     {
-        if (accel == true)
-        {
-            printf("現在の状態:動作中\n");
-        }
-        else if (accel == false)
-        {
-            printf("現在の状態:停止中\n");
-        }
-        else
-        {
-            printf("現在の状態:故障中\n");
-        }
+        printf("\n--------------------[Car]--------------------\n");
+        Speed();
+        NowCondition();
+        NowPosition(speed);
     }
 };
+
+class Bike : public Vehicle
+{
+//Bikeクラス Carクラスと機能は所持品は同じ
+public:
+    Bike()
+    {
+        speed = 0;//直接打ち込むことで変更
+        accel = 0;//その際はmainの入力項目は消すこと
+    };
+    void Update()
+    {
+        printf("\n--------------------[Bike]-------------------\n");
+        Speed();
+        NowCondition();
+        NowPosition(speed);
+    }
+};
+
 int main()
 {
     Car Car;
+    Bike Bike;
+    int accel;
 
-    for (int i = -1; i < 5; i++)
+    //入力した数値分加速減速を行う
+    //0以下のスピードになる場合はエラーメッセージの表示
+    //練習のため色んな機能を追加
+
+    printf("[Carのスピードを入力してください]\n");
+    scanf_s("%d", &accel);
+    Car.accel = accel;
+
+    printf("[Bikeのスピードを入力してください]\n");
+    scanf_s("%d", &accel);
+    Bike.accel = accel;
+
+    for (int i = 1; i < 5; i++)
     {
-        Car.SpeedUp();
         Car.Update();
+        Bike.Update();
     }
+    printf("\n");
 }
